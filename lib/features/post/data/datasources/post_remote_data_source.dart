@@ -37,7 +37,7 @@ class PostRemoteDataSourceImpl
 
   @override
   Future<List<Post>> getUsers(User user) async {
-    final queryParameters = {'user_id': "${user.id}"};
+    final queryParameters = {'adminid': "${user.id}"};
 
     return await makeGetRequest(
         dioClient.dio.get(ApiConfig.posts, queryParameters: queryParameters),

@@ -9,7 +9,7 @@ part 'todo.g.dart';
 class ToDo extends TodoEntity {
   const ToDo({
     super.id,
-    @JsonKey(name: "user_id") required super.userId,
+    @JsonKey(name: "admin_id") required super.userId,
     required super.title,
     @JsonKey(name: "due_on") required super.dueOn,
     @JsonKey(name: "status") required super.status,

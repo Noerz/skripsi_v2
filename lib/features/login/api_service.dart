@@ -6,7 +6,7 @@ class ApiService {
   Future<String> login(String email, String password) async {
     try {
       final response = await _dio.post(
-        'http://192.168.1.7:3000/api/v1/login-user', // Ganti dengan URL login API Anda
+        'https://noerz.my.id/api/v1/login-user', // Ganti dengan URL login API Anda
         data: {'email': email, 'password': password},
       );
 

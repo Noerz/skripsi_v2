@@ -51,7 +51,7 @@ class _UserListScreenState extends State<UserListScreen> {
           onChanged: (Gender value) => _controller.getUserList(gender: value),
         )
       ],
-      title: const Text("Users"),
+      title: const Text("Divisi"),
     );
   }
 
@@ -256,7 +256,11 @@ class _UserListScreenState extends State<UserListScreen> {
           itemCount: state?.length,
           itemBuilder: (_, index) {
             User user = state![index];
-            return userListItem(user).marginSymmetric(horizontal: 10);
+            return InkWell(
+              onTap: () {
+                navigateTo(PostListScreen(user: user));
+              },
+                child: userListItem(user).marginSymmetric(horizontal: 10));
           },
         ),
         onLoading: const SpinKitIndicator(type: SpinKitType.circle),

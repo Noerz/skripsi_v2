@@ -167,7 +167,7 @@ class _PostListScreenState extends State<PostListScreen> {
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          header,
+          
           const Padding(
             padding: EdgeInsets.only(left: 20, top: 15),
             child: Text("Posts", style: headLine1),

@@ -1,145 +1,72 @@
+import 'package:skripsi_v2/app/modules/home/views/menu.dart';
+import 'package:skripsi_v2/app/modules/profile/controllers/profile_controller.dart';
+import 'package:skripsi_v2/features/post/presentation/screens/post_list_screen.dart';
+import 'package:skripsi_v2/features/user/presentation/controller/user_controller.dart';
+import 'package:skripsi_v2/common/widget/spinkit_indicator.dart';
+import 'package:skripsi_v2/features/user/data/models/user.dart';
+
+import 'package:skripsi_v2/common/dialog/retry_dialog.dart';
+import 'package:skripsi_v2/common/widget/empty_widget.dart';
+
+import 'package:skripsi_v2/di.dart';
+
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:skripsi_v2/app/modules/home/views/menu.dart';
-import 'package:skripsi_v2/app/modules/login/controllers/auth_controller.dart';
 
-import '../controllers/home_controller.dart';
+enum UserOperation { edit, delete, post, todo }
 
-class HomeView extends GetView<HomeController> {
-  HomeView({Key? key}) : super(key: key);
-  final LoginController _authController = Get.find();
+class HomeView extends StatefulWidget {
+  const HomeView({Key? key}) : super(key: key);
+
+  @override
+  State<HomeView> createState() => _HomeViewState();
+}
+
+class _HomeViewState extends State<HomeView> {
+  final UserController _controller = getIt<UserController>();
+  final ProfileController _profileController = Get.find();
+
+  void navigateTo(Widget screen) {
+    if (!mounted) return;
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => screen,
+      ),
+    );
+  }
+
+  @override
+  void initState() {
+    _controller.getUserList();
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Padding(
-        padding: const EdgeInsets.only(top: 35),
-        child: Column(
-          children: [
-            Container(
-              width: 360,
-              height: 128,
-              padding: const EdgeInsets.only(
-                top: 40,
-                left: 20,
-                right: 20,
-                bottom: 28,
-              ),
-              child: Row(
-                mainAxisSize: MainAxisSize.min,
-                mainAxisAlignment: MainAxisAlignment.start,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  Container(
-                    width: 60,
-                    height: 60,
-                    child: Stack(
-                      children: [
-                        Positioned(
-                          left: 0,
-                          top: 0,
-                          child: Container(
-                            width: 60,
-                            height: 60,
-                            decoration: ShapeDecoration(
-                              shape: RoundedRectangleBorder(
-                                side: BorderSide(
-                                  width: 0.40,
-                                  color: Color(0xFF9D9898),
-                                ),
-                                borderRadius: BorderRadius.circular(30),
-                              ),
-                            ),
-                          ),
-                        ),
-                        Positioned(
-                          left: 3.57,
-                          top: 3.57,
-                          child: Container(
-                            width: 52.86,
-                            height: 52.86,
-                            decoration: ShapeDecoration(
-                              image: DecorationImage(
-                                image: NetworkImage(
-                                    "https://via.placeholder.com/53x53"),
-                                fit: BoxFit.fill,
-                              ),
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(26.43),
-                              ),
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                  const SizedBox(width: 16),
-                  Expanded(
-                    child: Container(
-                      height: 49,
-                      child: Row(
-                        mainAxisSize: MainAxisSize.min,
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        crossAxisAlignment: CrossAxisAlignment.start,
+      appBar: PreferredSize(preferredSize: Size.fromHeight(150), child:Obx(
+            () => _profileController.isLoading.value
+                ? Center(child: CircularProgressIndicator())
+                : ListView.builder(
+                    itemCount: _profileController.profiles.length,
+                    itemBuilder: (context, index) {
+                      var profile = _profileController.profiles[index];
+                      return Column(
                         children: [
-                          Expanded(
-                            child: Container(
-                              child: Column(
-                                mainAxisSize: MainAxisSize.min,
-                                mainAxisAlignment: MainAxisAlignment.start,
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Container(
-                                    child: Row(
-                                      mainAxisSize: MainAxisSize.min,
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.start,
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      children: [
-                                        Text(
-                                          "user",
-                                          style: TextStyle(
-                                            color: Color(0xFF323232),
-                                            fontSize: 24,
-                                            fontFamily: 'Open Sans',
-                                            fontWeight: FontWeight.w600,
-                                            letterSpacing: 0.24,
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                  Container(
-                                    child: Row(
-                                      mainAxisSize: MainAxisSize.min,
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.start,
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      children: [
-                                        Text(
-                                          'andrewjust@gmail.com',
-                                          style: TextStyle(
-                                            color: Color(0xFF9D9898),
-                                            fontSize: 12,
-                                            fontFamily: 'Open Sans',
-                                            fontWeight: FontWeight.w400,
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                ],
+                          ListTile(
+                            leading: CircleAvatar(
+                              backgroundImage: NetworkImage(
+                                  "https://ui-avatars.com/api/?name${profile.name}"),
+                            ),
+                            title: Text(
+                              "Selamat Datang, ${profile.name}",
+                              style: TextStyle(
+                                fontWeight: FontWeight.bold,
                               ),
                             ),
-                          ),
-                          const SizedBox(width: 16),
-                          Container(
-                            width: 24,
-                            height: 24,
-                            decoration: BoxDecoration(),
-                            child: IconButton(
+                            subtitle: Text(profile.email),
+                            trailing: IconButton(
                               onPressed: () {
                                 Get.snackbar('Belum Ada Notif',
                                     "Silahkan Cek Kembali Nanti");
@@ -147,73 +74,72 @@ class HomeView extends GetView<HomeController> {
                               icon: Icon(Icons.notifications),
                             ),
                           ),
+                          SizedBox(
+                            height: 75,
+                          ),
                         ],
+                      );
+                    },
+                  ),
+          ),),
+      body: Padding(
+        padding: const EdgeInsets.all(24.0),
+        child: Column(
+          children: [
+            _controller.obx(
+              (state) => ListView.builder(
+                shrinkWrap: true,
+                itemCount: 1,
+                itemBuilder: (_, index) {
+                  User user = state![index];
+                  return GridView.count(
+                    crossAxisCount: 2,
+                    physics: NeverScrollableScrollPhysics(),
+                    shrinkWrap: true,
+                    children: <Widget>[
+                      MenuCard(
+                        title: 'Kegiatanku',
+                        icon: Icons.event,
+                        onTap: () {
+                          // Aksi ketika menu "Kegiatanku" diklik
+                          Get.toNamed('/kegiatan');
+                        },
                       ),
-                    ),
-                  ),
-                ],
+                      MenuCard(
+                        title: 'Artikelku',
+                        icon: Icons.article,
+                        onTap: () {
+                          Get.to(PostListScreen(user: user));
+                          // Aksi ketika menu "Artikelku" diklik
+                        },
+                      ),
+                      MenuCard(
+                        title: 'Struktur',
+                        icon: Icons.business,
+                        onTap: () {
+                          Get.toNamed('/struktur');
+                          // Aksi ketika menu "Struktur" diklik
+                        },
+                      ),
+                      MenuCard(
+                        title: 'Profil',
+                        icon: Icons.person,
+                        onTap: () {
+                          Get.toNamed('/profile');
+                          // Aksi ketika menu "Profil" diklik
+                        },
+                      ),
+                    ],
+                  );
+                },
               ),
+              onLoading: const SpinKitIndicator(type: SpinKitType.circle),
+              onError: (error) => RetryDialog(
+                title: "$error",
+                onRetryPressed: () => _controller.getUserList(),
+              ),
+              onEmpty: const EmptyWidget(message: "No user!"),
             ),
-            Expanded(
-              child: Padding(
-                padding: EdgeInsets.all(16.0),
-                child: GridView.count(
-                  crossAxisCount: 2,
-                  children: [
-                    MenuCard(
-                      title: 'Kegiatanku',
-                      icon: Icons.event,
-                      onTap: () {
-                        // Aksi ketika menu "Kegiatanku" diklik
-                        Get.toNamed('/kegiatan');
-                      },
-                    ),
-                    MenuCard(
-                      title: 'Artikelku',
-                      icon: Icons.article,
-                      onTap: () {
-                        // Aksi ketika menu "Artikelku" diklik
-                      },
-                    ),
-                    MenuCard(
-                      title: 'Struktur',
-                      icon: Icons.business,
-                      onTap: () {
-                        Get.toNamed('/struktur');
-                        // Aksi ketika menu "Struktur" diklik
-                      },
-                    ),
-                    MenuCard(
-                      title: 'Profil',
-                      icon: Icons.person,
-                      onTap: () {
-Get.toNamed('/profile');
-                        // Aksi ketika menu "Profil" diklik
-                      },
-                    ),
-                  ],
-                ),
-              ),
-            ),
-            Padding(
-              padding: const EdgeInsets.all(32.0),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.end,
-                children: [
-                  Container(
-                    width: 24,
-                    height: 24,
-                    decoration: BoxDecoration(),
-                    child: IconButton(
-                      onPressed: () {
-                        _authController.logout();
-                      },
-                      icon: Icon(Icons.logout),
-                    ),
-                  ),
-                ],
-              ),
-            )
           ],
         ),
       ),

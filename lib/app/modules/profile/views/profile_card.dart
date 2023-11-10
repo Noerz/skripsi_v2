@@ -18,6 +18,7 @@ class ProfileCard extends StatelessWidget {
     return GestureDetector(
         onTap: onTap,
         child: Card(
+          margin: EdgeInsets.only(right:16,left: 16,top:8,bottom: 8),
           child: ListTile(
             leading: Icon(icon, size: 20),
             title: Text(

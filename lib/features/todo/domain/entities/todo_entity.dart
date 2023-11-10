@@ -18,8 +18,8 @@ class TodoEntity {
 }
 
 enum TodoStatus {
-  completed(true),
-  pending(false),
+  Completed(true),
+  Pending(false),
   all(false);
 
   final bool value;

@@ -149,7 +149,7 @@ class _ToDoListScreenState extends State<ToDoListScreen> {
       {Mode mode = Mode.create,
       //required for edit mode
       int? todoId,
-      TodoStatus todoStatus = TodoStatus.pending,
+      TodoStatus todoStatus = TodoStatus.Pending,
       required DateTime currentDateTime,
       String? taskTitle}) {
     final formKey = GlobalKey<FormState>();
@@ -184,7 +184,7 @@ class _ToDoListScreenState extends State<ToDoListScreen> {
                 const SizedBox(height: 15),
                 DropDown<TodoStatus>(
                   initialItem: todoStatus,
-                  items: const [TodoStatus.pending, TodoStatus.completed],
+                  items: const [TodoStatus.Pending, TodoStatus.Completed],
                   onChanged: (TodoStatus value) {
                     status = value;
                   },

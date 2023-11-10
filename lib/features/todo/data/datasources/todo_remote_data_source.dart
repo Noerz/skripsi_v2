@@ -36,7 +36,7 @@ class TodoRemoteDataSourceImpl with ApiBase<ToDo> implements TodoRemoteDataSourc
   @override
   Future<List<ToDo>> getTodos(int userId, {TodoStatus? status}) async {
     Map<String, String> queryParameters = <String, String>{
-      'user_id': "$userId"
+      'admin_id': "$userId"
     };
 
     if (status != null && status != TodoStatus.all) {
